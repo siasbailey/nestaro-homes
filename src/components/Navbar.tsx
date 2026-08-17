@@ -152,7 +152,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed w-full z-40 transition-colors duration-300 border-b ${
+      className={`fixed w-full z-50 transition-colors duration-300 border-b ${
         scrolled ? "bg-white border-[#e5e7eb]" : "bg-white/95 border-transparent"
       }`}
     >
@@ -576,3 +576,4 @@ export default function Navbar() {
     </nav>
   );
 }
+

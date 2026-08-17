@@ -114,7 +114,7 @@ export function AnnouncementTicker({ messages, settings }: { messages: TickerMes
 
   return (
     <div
-      className="overflow-hidden whitespace-nowrap relative z-50 h-10 flex items-center"
+      className="overflow-hidden whitespace-nowrap relative z-10 h-10 flex items-center"
       style={{ backgroundColor: settings.bgColor, color: settings.textColor }}
       onMouseEnter={() => settings.pauseOnHover === "yes" && setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -174,3 +174,4 @@ export default function AnnouncementBar() {
     </>
   );
 }
+
