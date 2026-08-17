@@ -1,6 +1,6 @@
 [build]
 builder = "NIXPACKS"
-watchPatterns = ["api/**"]
+buildCommand = "npx prisma generate && npm run build"
 
 [deploy]
-rootDirectory = "api"
+startCommand = "npx prisma db push && npm start"
