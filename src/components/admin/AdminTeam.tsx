@@ -115,8 +115,7 @@ export default function AdminTeam() {
     if (!file) return;
     setPhotoBusy(true);
     try {
-      const { optimizeImage } = await import("@/lib/image-utils");
-      const photo = await optimizeImage(file, { maxDimension: 800 });
+      const photo = await new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result as string); reader.onerror = reject; reader.readAsDataURL(file); });
       setForm((f) => ({ ...f, photo }));
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not process the image.");
@@ -134,8 +133,8 @@ export default function AdminTeam() {
       id: editingId ?? undefined,
       name: form.name.trim(),
       role: form.role.trim(),
-      bio: form.bio.trim() || undefined,
-      photo: form.photo || undefined,
+      bio: form.bio.trim() || null,
+      photo: form.photo || null,
       sortOrder: form.sortOrder,
       isActive: form.isActive,
     });
@@ -300,3 +299,4 @@ export default function AdminTeam() {
     </Card>
   );
 }
+
