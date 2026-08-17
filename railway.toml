@@ -1,0 +1,6 @@
+[build]
+builder = "NIXPACKS"
+watchPatterns = ["api/**"]
+
+[deploy]
+rootDirectory = "api"
