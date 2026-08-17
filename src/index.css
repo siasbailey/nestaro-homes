@@ -1,0 +1,193 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.375rem;
+    /* ── FlexHavens original design tokens (restored palette) ── */
+    --nh-ink: #26342b;          /* primary text / dark surfaces — deep forest green */
+    --nh-ink-deep: #192420;     /* footer / deep panels */
+    --nh-ink-soft: #3d5045;     /* secondary dark green */
+    --nh-bg: #f7f4ee;           /* warm off-white */
+    --nh-cream: #f3ede4;        /* warm cream surfaces */
+    --nh-sand: #e0b48c;         /* pale sand — fine lines, dividers */
+    --nh-accent: #c47a45;       /* warm copper — the single accent */
+    --nh-accent-dark: #a6632f;
+    --nh-gray: #9ca3af;         /* muted gray */
+    --nh-line: #e5e7eb;         /* hairline borders */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Announcement Bar Scrolling Animation */
+@keyframes scroll-x {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.333%); }
+}
+.animate-scroll-x {
+  animation: scroll-x 20s linear infinite;
+}
+
+/* Announcement rotate-mode fade */
+@keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--nh-ink);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--nh-ink-soft);
+}
+
+/* Fonts — loaded in index.html. Marcellus: editorial display serif (single
+   weight, deliberately un-bold); Inter: quiet workhorse for body/UI. */
+
+.font-serif {
+  font-family: 'Marcellus', 'Times New Roman', serif;
+  font-weight: 400;
+}
+
+body {
+  background-color: var(--nh-bg);
+  color: var(--nh-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Editorial section header pattern:
+   small uppercase label + display headline, left-aligned by default. */
+.nh-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--nh-accent);
+  font-weight: 500;
+}
+.nh-display {
+  font-family: 'Marcellus', 'Times New Roman', serif;
+  font-weight: 400;
+  color: var(--nh-ink);
+  line-height: 1.12;
+}
+.nh-rule {
+  height: 1px;
+  background: var(--nh-line);
+  border: 0;
+}
+
+/* Text-link CTA: label + arrow, underline grows on hover */
+.nh-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: var(--nh-ink);
+  position: relative;
+}
+.nh-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0.35);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+.nh-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* Transition for interactive elements — restrained */
+button, a {
+  transition: all 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
