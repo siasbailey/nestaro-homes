@@ -787,7 +787,8 @@ export default function AdminDashboard({ embedded = false }: { embedded?: boolea
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {properties?.map((p: any) => {
-                    const parsedImages = typeof p.images === "string" ? JSON.parse(p.images) : p.images;`n    const img = Array.isArray(parsedImages) && parsedImages.length > 0 ? parsedImages[0] : null;
+                                        const parsedImages = typeof p.images === "string" ? JSON.parse(p.images) : p.images;
+                    const img = Array.isArray(parsedImages) && parsedImages.length > 0 ? parsedImages[0] : null;
                     const editing = editingPriceId === p.id;
                     return (
                       <tr key={p.id} className="hover:bg-gray-50 transition">
