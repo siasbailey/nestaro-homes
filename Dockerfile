@@ -1,24 +1,18 @@
-# FlexHavens — full-stack build (React/Vite frontend + Hono/tRPC API)
-FROM node:20-slim AS build
+FROM node:20-alpine
+
 WORKDIR /app
 
-# Install dependencies
-COPY package.json package-lock.json ./
-RUN npm ci
+# Copy package dependency files
+COPY api/package*.json ./
+RUN npm install
 
-# Copy source and build frontend bundle + API bundle
-COPY . .
+# Copy project files
+COPY api/ .
+
+# Generate Prisma client and build
+RUN npx prisma generate
 RUN npm run build
-
-# ── Runtime ─────────────────────────────────────────────────────
-FROM node:20-slim
-WORKDIR /app
-ENV NODE_ENV=production
-
-COPY --from=build /app /app
 
 EXPOSE 3000
 
-# Apply database migrations, seed default data (idempotent), then start.
-# The server still starts even if the database is temporarily unreachable.
-CMD ["sh", "-c", "npx drizzle-kit migrate && npx tsx db/seed.ts; npm start"]
+CMD ["npm", "start"]
