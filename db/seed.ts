@@ -1,4 +1,4 @@
-import { getDb } from "../api/queries/connection";
+import { getDb } from "../queries/connection.ts";
 import { products, investmentPlans, investmentProjects } from "./schema";
 
 const productsData = [
@@ -399,3 +399,7 @@ async function seed() {
 import { eq } from "drizzle-orm";
 
 seed().catch(console.error);
+
+
+
+
