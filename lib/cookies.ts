@@ -11,7 +11,7 @@ export function getSessionCookieOptions(headers: Headers): CookieOptions {
   return {
     httpOnly: true,
     path: "/",
-    sameSite: localhost ? "Lax" : "None",
+    sameSite: "Lax", // Use Lax for production HTTPS as well
     secure: !localhost,
   };
 }
