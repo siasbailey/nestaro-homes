@@ -7,11 +7,13 @@ function isLocalhost(headers: Headers): boolean {
 
 export function getSessionCookieOptions(headers: Headers): CookieOptions {
   const localhost = isLocalhost(headers);
+  const proto = headers.get("x-forwarded-proto");
+  const isHttps = proto === "https" || !localhost;
 
   return {
     httpOnly: true,
     path: "/",
-    sameSite: "Lax", // Use Lax for production HTTPS as well
-    secure: !localhost,
+    sameSite: isHttps ? "None" : "Lax",
+    secure: isHttps,
   };
 }
