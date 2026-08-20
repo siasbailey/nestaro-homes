@@ -4,22 +4,62 @@ import bcrypt from "bcryptjs";
 import { TRPCError } from "@trpc/server";
 import { createRouter, publicQuery, adminSessionQuery, adminPermQuery } from "./middleware";
 import { getDb } from "./queries/connection";
-import { orders, orderItems, customers, trackingHistory, orderDocuments, contactSubmissions, products, adminUsers, investors, teamMembers } from "@db/schema";
+import { orders, orderItems, customers, trackingHistory, orderDocuments, contactSubmissions, products, adminUsers, investors, teamMembers } from "./db/schema";
 import { eq, desc, asc } from "drizzle-orm";
-import { AdminSession } from "@contracts/constants";
 import { getSessionCookieOptions } from "./lib/cookies";
 import { signAdminToken, parsePermissions } from "./lib/admin-session";
 import { ensurePrimaryAdmin } from "./lib/admin-users";
 import { checkRateLimit, resetRateLimit } from "./lib/rate-limit";
 import { notifyAdmin, logAudit } from "./lib/activity";
-import { PURCHASE_STAGE_KEYS, purchaseStageLabel, purchaseStageNext } from "@contracts/purchase-stages";
+// Keep purchase-stage definitions local so this router does not depend on the
+// unavailable @contracts/purchase-stages path.
+const PURCHASE_STAGE_KEYS = [
+  "purchase_request",
+  "payment_verification",
+  "purchase_agreement",
+  "legal_documentation",
+  "property_allocation",
+  "title_documentation",
+  "final_inspection",
+  "handed_over",
+] as const;
+
+const PURCHASE_STAGE_LABELS: Record<(typeof PURCHASE_STAGE_KEYS)[number], string> = {
+  purchase_request: "Purchase Request",
+  payment_verification: "Payment Verification",
+  purchase_agreement: "Purchase Agreement",
+  legal_documentation: "Legal Documentation",
+  property_allocation: "Property Allocation",
+  title_documentation: "Title Documentation",
+  final_inspection: "Final Inspection",
+  handed_over: "Handed Over",
+};
+
+function purchaseStageLabel(stage: (typeof PURCHASE_STAGE_KEYS)[number]) {
+  return PURCHASE_STAGE_LABELS[stage];
+}
+
+function purchaseStageNext(stage: (typeof PURCHASE_STAGE_KEYS)[number]) {
+  const index = PURCHASE_STAGE_KEYS.indexOf(stage);
+  return index >= 0 && index < PURCHASE_STAGE_KEYS.length - 1
+    ? PURCHASE_STAGE_LABELS[PURCHASE_STAGE_KEYS[index + 1]]
+    : null;
+}
 import { sendPurchaseProgressEmail } from "./lib/email";
 import { fmtMoney } from "./lib/format";
 import { generatePdfDocument } from "./lib/documents";
 import { leadEvent } from "./lib/crm";
 import { sendSystemMessage } from "./lib/messaging";
 import { notifyUser, notifyAdminEmail } from "./lib/notify";
-import type { AdminUser } from "@db/schema";
+
+// Keep the admin cookie configuration local so this router does not depend on
+// the unavailable @contracts/constants path.
+const AdminSession = {
+  cookieName: "admin_session",
+  maxAgeMs: 12 * 60 * 60 * 1000,
+} as const;
+
+type AdminUser = Parameters<typeof parsePermissions>[0];
 
 function sanitizeAdmin(admin: AdminUser) {
   const { passwordHash: _ignored, ...rest } = admin;
@@ -442,16 +482,10 @@ export const adminRouter = createRouter({
   }),
 
   // ── Property Price Management (Catalog permission) ────────────
-  // The products.price column is the single source of truth for the
-  // current selling price — catalog, details, cart, checkout and
-  // mortgage calculators all read it live. Historical records are
-  // never touched: orders/orderItems store their own agreed totals
-  // and mortgages snapshot propertyPrice at application time, so a
-  // price change applies to new purchases only.
   properties: adminPermQuery("catalog").query(async () => {
     const db = getDb();
-    return db.select().from(products).orderBy(desc(products.createdAt));
-  }),
+return db.select().from(products); 
+ }),
 
   updatePropertyPrice: adminPermQuery("catalog")
     .input(
@@ -490,9 +524,6 @@ export const adminRouter = createRouter({
     }),
 
   // ── Property Media Management (Catalog permission) ────────────
-  // products.images stays the single source of truth — catalog, property
-  // details, cards and search all read the same column, so replacing the
-  // image list updates the property everywhere at once. No duplicates.
   updatePropertyImages: adminPermQuery("catalog")
     .input(
       z.object({

@@ -1,5 +1,6 @@
 import { getDb } from "../queries/connection.ts";
-import { products, investmentPlans, investmentProjects } from "./schema";
+import { products, investmentPlans, investmentProjects, teamMembers } from "./schema.js";
+import { eq } from "drizzle-orm";
 
 const productsData = [
   {
@@ -252,8 +253,7 @@ const plansData = [
     targetReturn: 40,
     durationMonths: 6,
     featured: "no" as const,
-    description:
-      "Perfect for first-time savers. Start building toward your tiny home with a low minimum and a short 6-month term.",
+    description: "Perfect for first-time savers. Start building toward your tiny home with a low minimum and a short 6-month term.",
     features: JSON.stringify([
       "Minimum amount $1,000",
       "Home credit up to 40%",
@@ -272,8 +272,7 @@ const plansData = [
     targetReturn: 55,
     durationMonths: 12,
     featured: "no" as const,
-    description:
-      "Our most balanced plan. A full 12-month term across our tiny-home community projects with higher home-credit targets.",
+    description: "Our most balanced plan. A full 12-month term across our tiny-home community projects with higher home-credit targets.",
     features: JSON.stringify([
       "Minimum amount $5,000",
       "Home credit up to 55%",
@@ -293,8 +292,7 @@ const plansData = [
     targetReturn: 70,
     durationMonths: 18,
     featured: "yes" as const,
-    description:
-      "Maximum growth potential. An 18-month term across our flagship tiny-home communities with the highest home-credit targets.",
+    description: "Maximum growth potential. An 18-month term across our flagship tiny-home communities with the highest home-credit targets.",
     features: JSON.stringify([
       "Minimum amount $10,000",
       "Home credit up to 70%",
@@ -315,8 +313,7 @@ const projectsData = [
     name: "Pine Ridge Tiny Home Community",
     location: "Bend, Oregon",
     category: "Residential",
-    description:
-      "A 24-home tiny-home community in the high desert outside Bend, with shared green spaces, trail access, and mountain views — designed for full-time tiny living.",
+    description: "A 24-home tiny-home community in the high desert outside Bend, with shared green spaces, trail access, and mountain views — designed for full-time tiny living.",
     image: null as string | null,
     targetAmount: "250000.00",
     expectedReturn: 40,
@@ -327,8 +324,7 @@ const projectsData = [
     name: "Lakeshore Eco Tiny Village",
     location: "Truckee, California",
     category: "Eco Living",
-    description:
-      "A lakeside collection of 40 solar-equipped tiny homes with shared gardens, a community lodge, and smart energy management near Lake Tahoe.",
+    description: "A lakeside collection of 40 solar-equipped tiny homes with shared gardens, a community lodge, and smart energy management near Lake Tahoe.",
     image: null as string | null,
     targetAmount: "500000.00",
     expectedReturn: 55,
@@ -339,8 +335,7 @@ const projectsData = [
     name: "Riverbend Tiny Home Park",
     location: "Austin, Texas",
     category: "Mixed Use",
-    description:
-      "Flagship tiny-home park combining premium home sites with a community workshop, co-working barn, and weekend market stalls minutes from downtown Austin.",
+    description: "Flagship tiny-home park combining premium home sites with a community workshop, co-working barn, and weekend market stalls minutes from downtown Austin.",
     image: null as string | null,
     targetAmount: "1000000.00",
     expectedReturn: 70,
@@ -349,13 +344,34 @@ const projectsData = [
   },
 ];
 
+const teamData = [
+  {
+    name: "Sarah Mitchell",
+    role: "CEO & Founder",
+    bio: "With over 15 years in home design and construction, Sarah founded Nestaro Homes to make premium tiny living accessible across the US & Europe.",
+  },
+  {
+    name: "James Cooper",
+    role: "Head of Operations",
+    bio: "James oversees our Portland workshop, ensuring every home meets our strict quality standards before delivery.",
+  },
+  {
+    name: "Elena Rodriguez",
+    role: "Client Relations Manager",
+    bio: "Based in Portland, Elena supports our customers across the US and Europe from first enquiry to documentation and delivery.",
+  },
+  {
+    name: "David Kim",
+    role: "Customer Success Lead",
+    bio: "David and his team provide 24-hour support to our customers, from initial inquiry through documentation, delivery, and beyond.",
+  }
+];
+
 async function seed() {
   const db = getDb();
 
   console.log("Seeding products...");
-
   for (const product of productsData) {
-    // Check if product already exists
     const existing = await db.select().from(products).where(eq(products.slug, product.slug));
     if (existing.length === 0) {
       await db.insert(products).values(product);
@@ -366,7 +382,6 @@ async function seed() {
   }
 
   console.log("Seeding investment plans...");
-
   for (const plan of plansData) {
     const existing = await db.select().from(investmentPlans).where(eq(investmentPlans.slug, plan.slug));
     if (existing.length === 0) {
@@ -378,12 +393,8 @@ async function seed() {
   }
 
   console.log("Seeding investment projects...");
-
   for (const project of projectsData) {
-    const existing = await db
-      .select()
-      .from(investmentProjects)
-      .where(eq(investmentProjects.name, project.name));
+    const existing = await db.select().from(investmentProjects).where(eq(investmentProjects.name, project.name));
     if (existing.length === 0) {
       await db.insert(investmentProjects).values(project);
       console.log(`  Created: ${project.name}`);
@@ -392,14 +403,22 @@ async function seed() {
     }
   }
 
+  console.log("Seeding team members...");
+  for (const member of teamData) {
+    const existing = await db.select().from(teamMembers).where(eq(teamMembers.name, member.name));
+    if (existing.length === 0) {
+      await db.insert(teamMembers).values(member);
+      console.log(`  Added: ${member.name}`);
+    } else {
+      console.log(`  Exists: ${member.name}`);
+    }
+  }
+
   console.log("Seed complete!");
+  process.exit(0);
 }
 
-// Need to import eq
-import { eq } from "drizzle-orm";
-
-seed().catch(console.error);
-
-
-
-
+seed().catch((err) => {
+  console.error("Seeding failed:", err);
+  process.exit(1);
+});
