@@ -13,7 +13,7 @@ export function getSessionCookieOptions(headers: Headers): CookieOptions {
   return {
     httpOnly: true,
     path: "/",
-    sameSite: isHttps ? "None" : "Lax",
+    sameSite: "Lax", // Same-site requests on www.nestarohomes.com should use Lax
     secure: isHttps,
   };
 }
