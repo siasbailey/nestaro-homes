@@ -1,9 +1,9 @@
-import "dotenv/config";
+﻿import "dotenv/config";
 
 function required(name: string): string {
   const value = process.env[name];
   if (!value && process.env.NODE_ENV === "production") {
-    throw new Error(`Missing required environment variable: ${name}`);
+    throw new Error(Missing required environment variable:  + name);
   }
   return value ?? "";
 }
@@ -18,4 +18,5 @@ export const env = {
   ownerUnionId: process.env.OWNER_UNION_ID ?? "",
   adminPassword: process.env.ADMIN_PASSWORD ?? "admin123",
   investorJwtSecret: process.env.INVESTOR_JWT_SECRET ?? "",
+  adminJwtSecret: process.env.ADMIN_JWT_SECRET || required("APP_SECRET"),
 };

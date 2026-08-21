@@ -1,4 +1,4 @@
-import * as jose from "jose";
+﻿import * as jose from "jose";
 import * as cookie from "cookie";
 import { AdminSession, type AdminPermissionKey } from "@contracts/constants";
 import type { AdminUser } from "@db/schema";
@@ -13,7 +13,7 @@ export type AdminSessionPayload = {
 };
 
 function getSecret() {
-  const secret = process.env.ADMIN_JWT_SECRET || `${env.appSecret}:admin`;
+  const secret = env.adminJwtSecret || ${env.appSecret}:admin;
   return new TextEncoder().encode(secret);
 }
 
