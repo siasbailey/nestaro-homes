@@ -23,7 +23,7 @@ export default function AdminLogin() {
     onSuccess: async (data) => {
       localStorage.setItem("flexhavens-admin", "true");
       await utils.admin.adminMe.invalidate();
-      toast.success(Welcome back, !);
+      toast.success("Welcome back, " + data.admin.displayName + "!");
       navigate("/admin/dashboard", { replace: true });
     },
     onError: (err) => toast.error(err.message || "Invalid email or password"),
