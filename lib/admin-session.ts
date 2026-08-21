@@ -6,6 +6,20 @@ import { env } from "./env";
 
 const JWT_ALG = "HS256";
 
+
+
+export async function verifyAdminToken(token: string): Promise<AdminSessionPayload | null> {
+  if (!token) return null;
+  try {
+    const { payload } = await jose.jwtVerify(token, getSecret(), { algorithms: [JWT_ALG] });
+    return { adminId: payload.adminId as number, email: payload.email as string, iat: payload.iat };
+  } catch (err) {
+    console.error("JWT verification failed:", err); // <--- Add this log
+    return null;
+  }
+}
+
+
 export type AdminSessionPayload = {
   adminId: number;
   email: string;
