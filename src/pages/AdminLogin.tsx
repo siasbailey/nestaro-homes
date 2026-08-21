@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { Shield, Lock, ArrowLeft, Eye, EyeOff, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { trpc } from "@/providers/trpc";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
+  const utils = trpc.useUtils();
   const [email, setEmail] = useState("admin@flexhavens.local");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -19,10 +20,10 @@ export default function AdminLogin() {
   }, [navigate]);
 
   const login = trpc.admin.login.useMutation({
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       localStorage.setItem("flexhavens-admin", "true");
-      toast.success(`Welcome back, ${data.admin.displayName}!`);
-      // Replace the login entry — Back should not return to the login form
+      await utils.admin.adminMe.invalidate();
+      toast.success(Welcome back, !);
       navigate("/admin/dashboard", { replace: true });
     },
     onError: (err) => toast.error(err.message || "Invalid email or password"),
@@ -41,7 +42,7 @@ export default function AdminLogin() {
     <div
       className="min-h-screen flex items-center justify-center px-4"
       style={{
-        backgroundImage: `linear-gradient(rgba(30, 58, 95, 0.95), rgba(30, 58, 95, 0.92)), url('/images/hero-home.jpg')`,
+        backgroundImage: linear-gradient(rgba(30, 58, 95, 0.95), rgba(30, 58, 95, 0.92)), url('/images/hero-home.jpg'),
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
