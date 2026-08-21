@@ -13,7 +13,7 @@ export type AdminSessionPayload = {
 };
 
 function getSecret() {
-  const secret = env.adminJwtSecret || ${env.appSecret}:admin;
+  const secret = env.adminJwtSecret || (env.appSecret + ":admin");
   return new TextEncoder().encode(secret);
 }
 
