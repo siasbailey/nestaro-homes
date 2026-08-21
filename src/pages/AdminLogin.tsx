@@ -42,7 +42,7 @@ export default function AdminLogin() {
     <div
       className="min-h-screen flex items-center justify-center px-4"
       style={{
-        backgroundImage: linear-gradient(rgba(30, 58, 95, 0.95), rgba(30, 58, 95, 0.92)), url('/images/hero-home.jpg'),
+        backgroundImage: "linear-gradient(rgba(30, 58, 95, 0.95), rgba(30, 58, 95, 0.92)), url('/images/hero-home.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
