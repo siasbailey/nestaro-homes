@@ -44,7 +44,7 @@ function SocialLinks({ bgColor }: { bgColor: string }) {
         </svg>
       </a>
       <a
-        href="https://tiktok.com/@nestarohomes"
+        href="https://tiktok.com/@nestaro_homes"
         target="_blank"
         rel="noopener noreferrer"
         className="hover:scale-110 transition-transform"
